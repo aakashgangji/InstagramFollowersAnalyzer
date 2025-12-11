@@ -14,10 +14,10 @@ A simple web application that helps you identify people who don't follow you bac
 ### Step 1: Export Your Instagram Data
 
 1. Go to your Instagram account settings
-![Export Information](/Screenshots/1.png)
+   ![Export Information](Screenshots/1.png)
 2. Navigate to "Your activity" → "Download your information"
 3. Select "JSON" format
-![Export Information](/Screenshots/2.png)
+   ![Export Information](Screenshots/2.png)
 4. Request a download of your data
 5. Once downloaded, extract the ZIP file
 

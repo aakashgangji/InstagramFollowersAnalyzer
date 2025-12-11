@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>People Not Following You Back</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #000000;
+            min-height: 100vh;
+            padding: 10px;
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 935px;
+            margin: 0 auto;
+            background: #000000;
+            border-radius: 0;
+            overflow: hidden;
+        }
+
+        .header {
+            background: #121212;
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 1px solid #262626;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 8px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 0.95em;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 24px 16px;
+            background: #000000;
+            border-bottom: 1px solid #262626;
+        }
+
+        .stat-item {
+            text-align: center;
+            flex: 1;
+        }
+
+        .stat-number {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.2;
+        }
+
+        .stat-label {
+            color: #a8a8a8;
+            margin-top: 4px;
+            font-size: 0.75em;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content {
+            padding: 20px;
+            background: #000000;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #a8a8a8;
+            font-size: 1em;
+        }
+
+        .error {
+            background: rgba(220, 38, 67, 0.1);
+            color: #ff3040;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid rgba(220, 38, 67, 0.3);
+            font-size: 0.9em;
+        }
+
+        .controls {
+            margin-bottom: 24px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 16px;
+            border: 1px solid #262626;
+            border-radius: 8px;
+            font-size: 0.9em;
+            background: #000000;
+            color: #ffffff;
+            transition: border-color 0.2s;
+        }
+
+        .search-box::placeholder {
+            color: #8e8e8e;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #a8a8a8;
+        }
+
+        .sort-select {
+            padding: 10px 16px;
+            border: 1px solid #262626;
+            border-radius: 8px;
+            font-size: 0.9em;
+            background: #000000;
+            color: #ffffff;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .sort-select:focus {
+            outline: none;
+            border-color: #a8a8a8;
+        }
+
+        .sort-select option {
+            background: #000000;
+            color: #ffffff;
+        }
+
+        .profile-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .profile-card {
+            background: #121212;
+            border-radius: 12px;
+            padding: 16px;
+            transition: all 0.2s ease;
+            border: 1px solid #262626;
+            cursor: pointer;
+        }
+
+        .profile-card:hover {
+            background: #1a1a1a;
+            border-color: #363636;
+            transform: translateY(-2px);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .profile-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #262626;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.1em;
+            color: #ffffff;
+            flex-shrink: 0;
+            border: 1px solid #363636;
+        }
+
+        .profile-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .profile-username {
+            font-size: 0.95em;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 4px;
+            word-break: break-word;
+            line-height: 1.3;
+        }
+
+        .profile-link {
+            color: #4a9eff;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 0.85em;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .profile-link:hover {
+            color: #6bb0ff;
+        }
+
+        .profile-timestamp {
+            color: #a8a8a8;
+            font-size: 0.75em;
+            font-weight: 400;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 80px 20px;
+            color: #a8a8a8;
+        }
+
+        .no-results h2 {
+            font-size: 1.5em;
+            margin-bottom: 8px;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .no-results p {
+            color: #8e8e8e;
+            font-size: 0.9em;
+        }
+
+        .file-inputs {
+            background: #121212;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            border: 1px dashed #262626;
+        }
+
+        .file-input-group {
+            margin-bottom: 16px;
+        }
+
+        .file-input-group:last-of-type {
+            margin-bottom: 20px;
+        }
+
+        .file-input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #ffffff;
+            font-size: 0.9em;
+        }
+
+        .file-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #262626;
+            border-radius: 8px;
+            font-size: 0.9em;
+            background: #000000;
+            color: #ffffff;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .file-input:hover {
+            border-color: #363636;
+        }
+
+        .file-input::file-selector-button {
+            padding: 6px 12px;
+            margin-right: 12px;
+            border: 1px solid #262626;
+            border-radius: 6px;
+            background: #121212;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.2s;
+        }
+
+        .file-input::file-selector-button:hover {
+            background: #1a1a1a;
+            border-color: #363636;
+        }
+
+        .process-button {
+            width: 100%;
+            padding: 12px;
+            background: #262626;
+            color: white;
+            border: 1px solid #363636;
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .process-button:hover:not(:disabled) {
+            background: #363636;
+            border-color: #4a4a4a;
+            transform: scale(1.01);
+        }
+
+        .process-button:active:not(:disabled) {
+            transform: scale(0.99);
+        }
+
+        .process-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+
+            .container {
+                border-radius: 0;
+            }
+
+            .header {
+                padding: 24px 16px;
+            }
+
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .header p {
+                font-size: 0.85em;
+            }
+
+            .stats {
+                flex-direction: column;
+                gap: 20px;
+                padding: 20px 16px;
+            }
+
+            .stat-item {
+                padding: 12px 0;
+                border-bottom: 1px solid #262626;
+            }
+
+            .stat-item:last-child {
+                border-bottom: none;
+            }
+
+            .stat-number {
+                font-size: 2em;
+            }
+
+            .content {
+                padding: 16px;
+            }
+
+            .profile-list {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .profile-card {
+                padding: 14px;
+            }
+
+            .profile-avatar {
+                width: 40px;
+                height: 40px;
+                font-size: 1em;
+            }
+
+            .profile-header {
+                gap: 10px;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .search-box,
+            .sort-select {
+                width: 100%;
+            }
+
+            .file-inputs {
+                padding: 20px 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.3em;
+            }
+
+            .stat-number {
+                font-size: 1.6em;
+            }
+
+            .stat-label {
+                font-size: 0.7em;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .profile-list {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Not Following You Back</h1>
+            <p>People you follow who don't follow you back</p>
+        </div>
+
+        <div class="stats" id="stats" style="display: none;">
+            <div class="stat-item">
+                <div class="stat-number" id="totalFollowing">0</div>
+                <div class="stat-label">You Follow</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="totalFollowers">0</div>
+                <div class="stat-label">Follow You</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="notFollowingBack">0</div>
+                <div class="stat-label">Not Following Back</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div id="fileInputs" class="file-inputs">
+                <div class="file-input-group">
+                    <label for="followingFile">Select Following File (following.json):</label>
+                    <input type="file" id="followingFile" class="file-input" accept=".json">
+                </div>
+                <div class="file-input-group">
+                    <label for="followersFile">Select Followers File (followers_1.json):</label>
+                    <input type="file" id="followersFile" class="file-input" accept=".json">
+                </div>
+                <button id="processButton" class="process-button" onclick="processFiles()">Process Files</button>
+            </div>
+
+            <div id="loading" class="loading" style="display: none;">Processing data...</div>
+            <div id="error" class="error" style="display: none;"></div>
+
+            <div id="controls" style="display: none;" class="controls">
+                <input type="text" id="searchBox" class="search-box" placeholder="Search by username...">
+                <select id="sortSelect" class="sort-select">
+                    <option value="username">Sort by Username</option>
+                    <option value="timestamp">Sort by Date (Newest)</option>
+                    <option value="timestamp-desc">Sort by Date (Oldest)</option>
+                </select>
+            </div>
+
+            <div id="profileList" class="profile-list"></div>
+        </div>
+    </div>
+
+    <script>
+        let allProfiles = [];
+        let filteredProfiles = [];
+
+        function readFileAsText(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = (e) => reject(new Error('Failed to read file'));
+                reader.readAsText(file);
+            });
+        }
+
+        async function processFiles() {
+            const followingFile = document.getElementById('followingFile').files[0];
+            const followersFile = document.getElementById('followersFile').files[0];
+
+            if (!followingFile || !followersFile) {
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('error').textContent = 'Please select both files before processing.';
+                return;
+            }
+
+            try {
+                // Show loading, hide error
+                document.getElementById('loading').style.display = 'block';
+                document.getElementById('error').style.display = 'none';
+                document.getElementById('fileInputs').style.display = 'none';
+                document.getElementById('processButton').disabled = true;
+
+                // Read files
+                const followingText = await readFileAsText(followingFile);
+                const followersText = await readFileAsText(followersFile);
+
+                // Parse JSON
+                const followingData = JSON.parse(followingText);
+                const followersData = JSON.parse(followersText);
+
+                // Extract usernames from following
+                const followingSet = new Set();
+                const followingProfiles = [];
+                
+                if (followingData.relationships_following) {
+                    followingData.relationships_following.forEach(item => {
+                        const username = item.title;
+                        if (username) {
+                            followingSet.add(username.toLowerCase());
+                            const timestamp = item.string_list_data && item.string_list_data[0] 
+                                ? item.string_list_data[0].timestamp * 1000 
+                                : null;
+                            followingProfiles.push({
+                                username: username,
+                                href: item.string_list_data && item.string_list_data[0] 
+                                    ? item.string_list_data[0].href 
+                                    : `https://www.instagram.com/${username}`,
+                                timestamp: timestamp
+                            });
+                        }
+                    });
+                }
+
+                // Extract usernames from followers
+                const followersSet = new Set();
+                if (Array.isArray(followersData)) {
+                    followersData.forEach(item => {
+                        if (item.string_list_data && item.string_list_data[0] && item.string_list_data[0].value) {
+                            followersSet.add(item.string_list_data[0].value.toLowerCase());
+                        }
+                    });
+                }
+
+                // Find people who don't follow back
+                allProfiles = followingProfiles.filter(profile => 
+                    !followersSet.has(profile.username.toLowerCase())
+                );
+
+                // Update stats
+                document.getElementById('totalFollowing').textContent = followingProfiles.length.toLocaleString();
+                document.getElementById('totalFollowers').textContent = followersSet.size.toLocaleString();
+                document.getElementById('notFollowingBack').textContent = allProfiles.length.toLocaleString();
+                document.getElementById('stats').style.display = 'flex';
+
+                // Display profiles
+                filteredProfiles = [...allProfiles];
+                displayProfiles();
+
+                // Hide loading, show controls
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('controls').style.display = 'flex';
+
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('error').textContent = 'Error: ' + error.message;
+                document.getElementById('fileInputs').style.display = 'block';
+                document.getElementById('processButton').disabled = false;
+                console.error('Error processing files:', error);
+            }
+        }
+
+        function displayProfiles() {
+            const profileList = document.getElementById('profileList');
+            
+            if (filteredProfiles.length === 0) {
+                profileList.innerHTML = `
+                    <div class="no-results">
+                        <h2>No results found</h2>
+                        <p>Try adjusting your search or filter</p>
+                    </div>
+                `;
+                return;
+            }
+
+            profileList.innerHTML = filteredProfiles.map(profile => {
+                const dateStr = profile.timestamp 
+                    ? new Date(profile.timestamp).toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'short', 
+                        day: 'numeric' 
+                    })
+                    : 'Unknown date';
+
+                return `
+                    <div class="profile-card">
+                        <div class="profile-header">
+                            <div class="profile-avatar">${profile.username.charAt(0).toUpperCase()}</div>
+                            <div class="profile-info">
+                                <div class="profile-username">@${profile.username}</div>
+                                ${profile.timestamp ? `<div class="profile-timestamp">Followed ${dateStr}</div>` : ''}
+                            </div>
+                        </div>
+                        <a href="${profile.href}" target="_blank" class="profile-link">View on Instagram →</a>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterAndSort() {
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            const sortBy = document.getElementById('sortSelect').value;
+
+            // Filter
+            filteredProfiles = allProfiles.filter(profile => 
+                profile.username.toLowerCase().includes(searchTerm)
+            );
+
+            // Sort
+            filteredProfiles.sort((a, b) => {
+                if (sortBy === 'username') {
+                    return a.username.localeCompare(b.username);
+                } else if (sortBy === 'timestamp') {
+                    return (b.timestamp || 0) - (a.timestamp || 0);
+                } else if (sortBy === 'timestamp-desc') {
+                    return (a.timestamp || 0) - (b.timestamp || 0);
+                }
+                return 0;
+            });
+
+            displayProfiles();
+        }
+
+        // Event listeners
+        document.getElementById('searchBox').addEventListener('input', filterAndSort);
+        document.getElementById('sortSelect').addEventListener('change', filterAndSort);
+    </script>
+</body>
+</html>
