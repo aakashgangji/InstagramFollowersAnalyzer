@@ -33,6 +33,7 @@ You'll need these two files from your Instagram data export:
 2. Click "Choose File" for the **Following File** and select your `following.json`
 3. Click "Choose File" for the **Followers File** and select your `followers_1.json`
 4. Click the **"Process Files"** button
+   ![Export Information](Screenshots/3.png)
 
 ### Step 4: View Results
 
