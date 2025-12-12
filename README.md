@@ -17,9 +17,9 @@ https://instagram-followers-analyzer.aakashgangji.vip/
 
 ### Step 1: Export Your Instagram Data
 
-1. Go to your Instagram account settings
+1. Go to your Instagram account settings > Accounts center
+2. Navigate to "Your Information and Permissions" → "Export your information"
    ![Export Information](Screenshots/1.png)
-2. Navigate to "Your activity" → "Download your information"
 3. Select "JSON" format
    ![Export Information](Screenshots/2.png)
 4. Request a download of your data

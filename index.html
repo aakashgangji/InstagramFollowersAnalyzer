@@ -331,6 +331,87 @@
             transform: none;
         }
 
+        .instructions {
+            background: #121212;
+            border: 1px solid #262626;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .instructions-header {
+            padding: 16px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+
+        .instructions-header:hover {
+            background: #1a1a1a;
+        }
+
+        .instructions-title {
+            font-weight: 600;
+            color: #ffffff;
+            font-size: 0.95em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .instructions-icon {
+            transition: transform 0.3s;
+            color: #a8a8a8;
+            font-size: 1.2em;
+        }
+
+        .instructions-icon.expanded {
+            transform: rotate(180deg);
+        }
+
+        .instructions-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .instructions-content.expanded {
+            max-height: 1000px;
+            transition: max-height 0.5s ease-in;
+        }
+
+        .instructions-steps {
+            padding: 0 20px 20px 20px;
+            color: #a8a8a8;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .instructions-steps ol {
+            margin-left: 20px;
+            padding-left: 0;
+        }
+
+        .instructions-steps li {
+            margin-bottom: 12px;
+        }
+
+        .instructions-steps strong {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .instructions-steps code {
+            background: #000000;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            color: #4a9eff;
+            border: 1px solid #262626;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             body {
@@ -407,6 +488,15 @@
             .file-inputs {
                 padding: 20px 16px;
             }
+
+            .instructions-header {
+                padding: 14px 16px;
+            }
+
+            .instructions-steps {
+                padding: 0 16px 16px 16px;
+                font-size: 0.85em;
+            }
         }
 
         @media (max-width: 480px) {
@@ -453,6 +543,53 @@
         </div>
 
         <div class="content">
+            <div class="instructions">
+                <div class="instructions-header" onclick="toggleInstructions()" onKeyDown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleInstructions();}" tabindex="0" role="button" aria-expanded="false" id="instructionsHeader">
+                    <div class="instructions-title">
+
+                        <span>How to Export Instagram Data</span>
+                    </div>
+                    <span class="instructions-icon" id="instructionsIcon">▼</span>
+                </div>
+                <div class="instructions-content" id="instructionsContent">
+                    <div class="instructions-steps">
+                        <ol>
+                            <li>
+                                <strong>Go to Settings:</strong> Open Instagram and navigate to <strong>Settings</strong>
+                            </li>
+                            <li>
+                                <strong>Access Account Center:</strong> Go to <strong>Account Center</strong>
+                            </li>
+                            <li>
+                                <strong>Your Information and Permissions:</strong> Navigate to <strong>"Your information and permissions"</strong>
+                            </li>
+                            <li>
+                                <strong>Export Your Information:</strong> Click on <strong>"Export your Information"</strong>
+                            </li>
+                            <li>
+                                <strong>Select Format:</strong> Choose <code>JSON</code> format for the download
+                            </li>
+                            <li>
+                                <strong>Request Download:</strong> Click "Request Download" and wait for Instagram to prepare your data (may take 24-48 hours)
+                            </li>
+                            <li>
+                                <strong>Extract Files:</strong> Once you receive the email, download and extract the ZIP file
+                            </li>
+                            <li>
+                                <strong>Locate Files:</strong> Find these two files in the extracted folder:
+                                <ul style="margin-top: 8px; margin-left: 20px;">
+                                    <li><code>followers_and_following/following.json</code></li>
+                                    <li><code>followers_and_following/followers_1.json</code></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Upload Files:</strong> Use the file inputs below to select these two JSON files and click "Process Files"
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
             <div id="fileInputs" class="file-inputs">
                 <div class="file-input-group">
                     <label for="followingFile">Select Following File (following.json):</label>
@@ -640,6 +777,16 @@
             });
 
             displayProfiles();
+        }
+
+        // Toggle instructions
+        function toggleInstructions() {
+            const content = document.getElementById('instructionsContent');
+            const icon = document.getElementById('instructionsIcon');
+            const header = document.getElementById('instructionsHeader');
+            const isExpanded = content.classList.toggle('expanded');
+            icon.classList.toggle('expanded');
+            header.setAttribute('aria-expanded', isExpanded);
         }
 
         // Event listeners
